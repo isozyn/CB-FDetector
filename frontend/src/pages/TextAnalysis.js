@@ -89,6 +89,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  backgroundColor: 'transparent !important',
+  '&.MuiCardContent-root': {
+    backgroundColor: 'transparent',
+  },
+}));
+
 const ResultCard = styled(Paper)(({ theme, riskLevel }) => {
   const getColors = () => {
     switch (riskLevel) {
@@ -253,7 +260,7 @@ const TextAnalysis = () => {
       </Typography>
 
       <StyledCard>
-        <CardContent sx={{ p: 4 }}>
+        <StyledCardContent sx={{ p: 4 }}>
           <Box display="flex" alignItems="center" gap={2} mb={3}>
             <TextIcon size={28} color="primary" />
             <Box>
@@ -297,7 +304,7 @@ Examples:
               {loading ? 'Analyzing...' : 'Analyze Text'}
             </AnalyzeButton>
           </Box>
-        </CardContent>
+        </StyledCardContent>
       </StyledCard>
 
       {error && (

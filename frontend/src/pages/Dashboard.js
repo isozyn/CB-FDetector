@@ -41,7 +41,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const MetricCard = styled(Card)(({ theme, riskLevel }) => {
+const MetricCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'riskLevel',
+})(({ theme, riskLevel }) => {
   const getGradient = () => {
     switch (riskLevel) {
       case 'high': return 'linear-gradient(135deg, #ff0040 0%, #cc0033 100%)';
@@ -75,6 +77,13 @@ const MetricCard = styled(Card)(({ theme, riskLevel }) => {
     },
   };
 });
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  backgroundColor: 'transparent !important',
+  '&.MuiCardContent-root': {
+    backgroundColor: 'transparent',
+  },
+}));
 
 const QuickActionButton = styled(Button)(({ theme }) => ({
   background: 'linear-gradient(135deg, #00ffff 0%, #00cc99 100%)',
@@ -251,7 +260,7 @@ const Dashboard = () => {
       <Grid container spacing={3} sx={{ mb: 6 }}>
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="high">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
@@ -266,13 +275,13 @@ const Dashboard = () => {
                 </Box>
                 <AlertIcon size={32} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="medium">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
@@ -287,13 +296,13 @@ const Dashboard = () => {
                 </Box>
                 <WarningIcon size={32} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="low">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
@@ -308,13 +317,13 @@ const Dashboard = () => {
                 </Box>
                 <WarningIcon size={32} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="none">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
@@ -329,13 +338,13 @@ const Dashboard = () => {
                 </Box>
                 <CheckCircleIcon size={32} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard>
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h4" fontWeight={700}>
@@ -350,7 +359,7 @@ const Dashboard = () => {
                 </Box>
                 <ShieldIcon size={32} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
       </Grid>
@@ -359,7 +368,7 @@ const Dashboard = () => {
         {/* Quick Scan Actions */}
         <Grid item xs={12} md={8}>
           <StyledCard>
-            <CardContent>
+            <StyledCardContent>
               <Typography 
                 variant="h6" 
                 gutterBottom 
@@ -406,14 +415,14 @@ const Dashboard = () => {
                   </Grid>
                 ))}
               </Grid>
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
 
         {/* Recent Activity */}
         <Grid item xs={12} md={4}>
           <StyledCard>
-            <CardContent>
+            <StyledCardContent>
               <Typography variant="h6" gutterBottom fontWeight={600}>
                 Recent Activity
               </Typography>
@@ -470,7 +479,7 @@ const Dashboard = () => {
                   ))}
                 </List>
               )}
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
       </Grid>

@@ -37,26 +37,96 @@ import {
 import { apiService } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-  border: '1px solid rgba(0,0,0,0.05)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  background: 'linear-gradient(135deg, #1a1f3a 0%, #2a2f5a 50%, #1a1f3a 100%)',
+  border: '1px solid rgba(0, 255, 255, 0.3)',
+  boxShadow: '0 8px 32px rgba(0, 255, 255, 0.1)',
   borderRadius: '16px',
+  color: '#ffffff',
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    backgroundColor: 'rgba(26, 31, 58, 0.8)',
+    borderRadius: '12px',
+    border: '1px solid rgba(0, 255, 255, 0.3)',
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: 'rgba(26, 31, 58, 0.9)',
+      border: '1px solid rgba(0, 255, 255, 0.5)',
+    },
+    '&.Mui-focused': {
+      backgroundColor: 'rgba(26, 31, 58, 1)',
+      border: '1px solid rgba(0, 255, 255, 0.8)',
+      boxShadow: '0 0 0 3px rgba(0, 255, 255, 0.1)',
+    },
+    '& fieldset': {
+      border: 'none',
+    },
+    '& .MuiInputBase-input': {
+      color: '#ffffff',
+      '&::placeholder': {
+        color: 'rgba(255, 255, 255, 0.5)',
+      },
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255, 255, 255, 0.7)',
+    '&.Mui-focused': {
+      color: '#00ffff',
+    },
+  },
+  '& .MuiSelect-icon': {
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  // Menu dropdown styling
+  '& .MuiPaper-root': {
+    backgroundColor: 'rgba(26, 31, 58, 0.95)',
+    border: '1px solid rgba(0, 255, 255, 0.3)',
+  },
+  '& .MuiMenuItem-root': {
+    color: '#ffffff',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 255, 255, 0.1)',
+    },
+    '&.Mui-selected': {
+      backgroundColor: 'rgba(0, 255, 255, 0.2)',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 255, 255, 0.3)',
+      },
+    },
+  },
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  background: 'transparent',
+  '&.MuiCardContent-root': {
+    backgroundColor: 'transparent',
+  },
 }));
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   borderRadius: '12px',
+  backgroundColor: 'rgba(26, 31, 58, 0.6)',
   '& .MuiTable-root': {
     minWidth: 650,
   },
   '& .MuiTableHead-root': {
-    backgroundColor: '#f8fafc',
+    backgroundColor: 'rgba(26, 31, 58, 0.8)',
   },
   '& .MuiTableCell-head': {
     fontWeight: 600,
-    color: '#374151',
+    color: '#ffffff',
+    borderBottom: '1px solid rgba(0, 255, 255, 0.3)',
+  },
+  '& .MuiTableCell-body': {
+    color: '#ffffff',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
   },
   '& .MuiTableRow-root:hover': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'rgba(0, 255, 255, 0.05)',
+    boxShadow: '0 2px 8px rgba(0, 255, 255, 0.15)',
+    transform: 'translateY(-1px)',
+    transition: 'all 0.2s ease-in-out',
   },
 }));
 
@@ -305,10 +375,10 @@ const History = () => {
       )}
 
       <StyledCard>
-        <CardContent sx={{ p: 3 }}>
+        <StyledCardContent sx={{ p: 3 }}>
           {/* Filters */}
           <Box display="flex" gap={2} mb={3} flexWrap="wrap">
-            <TextField
+            <StyledTextField
               select
               label="Filter by Type"
               value={filterType}
@@ -320,9 +390,9 @@ const History = () => {
               <MenuItem value="text">📝 Text</MenuItem>
               <MenuItem value="url">🔗 URL</MenuItem>
               <MenuItem value="file">📄 File</MenuItem>
-            </TextField>
+            </StyledTextField>
 
-            <TextField
+            <StyledTextField
               select
               label="Filter by Risk"
               value={filterRisk}
@@ -334,9 +404,9 @@ const History = () => {
               <MenuItem value="high">🔴 High Risk</MenuItem>
               <MenuItem value="low">🟡 Low Risk</MenuItem>
               <MenuItem value="none">🟢 Safe</MenuItem>
-            </TextField>
+            </StyledTextField>
 
-            <TextField
+            <StyledTextField
               label="Search content"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -445,7 +515,7 @@ const History = () => {
               )}
             </>
           )}
-        </CardContent>
+        </StyledCardContent>
       </StyledCard>
 
       {/* Item Details Dialog */}
@@ -481,7 +551,7 @@ const History = () => {
                 <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                   Analyzed Content:
                 </Typography>
-                <Paper sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: '8px' }}>
+                <Paper sx={{ p: 2, bgcolor: 'transparent', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}>
                   <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
                     {selectedItem.input}
                   </Typography>
@@ -510,7 +580,7 @@ const History = () => {
                     <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                       Technical Details:
                     </Typography>
-                    <Paper sx={{ p: 2, bgcolor: '#f8fafc', borderRadius: '8px' }}>
+                    <Paper sx={{ p: 2, bgcolor: 'transparent', borderRadius: '8px', border: '1px solid rgba(0,0,0,0.1)' }}>
                       <Typography variant="body2" fontWeight={600} gutterBottom>
                         Analysis Method: {details.method}
                       </Typography>

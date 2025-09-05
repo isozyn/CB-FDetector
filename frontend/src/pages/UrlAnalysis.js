@@ -90,6 +90,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  backgroundColor: 'transparent !important',
+  '&.MuiCardContent-root': {
+    backgroundColor: 'transparent',
+  },
+}));
+
 const ResultCard = styled(Paper)(({ theme, riskLevel }) => {
   const getColors = () => {
     switch (riskLevel) {
@@ -280,7 +287,7 @@ const UrlAnalysis = () => {
       </Typography>
 
       <StyledCard>
-        <CardContent sx={{ p: 4 }}>
+        <StyledCardContent sx={{ p: 4 }}>
           <Box display="flex" alignItems="center" gap={2} mb={3}>
             <LinkIcon size={28} color="primary" />
             <Box>
@@ -316,7 +323,7 @@ const UrlAnalysis = () => {
               {loading ? 'Scanning...' : 'Scan URL'}
             </AnalyzeButton>
           </Box>
-        </CardContent>
+        </StyledCardContent>
       </StyledCard>
 
       {error && (

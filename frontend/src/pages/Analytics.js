@@ -47,15 +47,21 @@ ChartJS.register(
 );
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-  border: '1px solid rgba(0,0,0,0.05)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  background: 'linear-gradient(135deg, #1E293B 0%, #334155 50%, #1E293B 100%)',
+  border: '1px solid rgba(0, 255, 255, 0.3)',
+  boxShadow: '0 8px 32px rgba(0, 255, 255, 0.1)',
   borderRadius: '16px',
   height: '100%',
   transition: 'all 0.3s ease',
   '&:hover': {
     transform: 'translateY(-2px)',
-    boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+  },
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  backgroundColor: 'transparent !important',
+  '&.MuiCardContent-root': {
+    backgroundColor: 'transparent',
   },
 }));
 
@@ -378,7 +384,7 @@ const Analytics = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="high">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h3" fontWeight={700}>
@@ -393,13 +399,13 @@ const Analytics = () => {
                 </Box>
                 <AlertIcon size={36} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="low">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h3" fontWeight={700}>
@@ -414,13 +420,13 @@ const Analytics = () => {
                 </Box>
                 <WarningIcon size={36} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard riskLevel="none">
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h3" fontWeight={700}>
@@ -435,13 +441,13 @@ const Analytics = () => {
                 </Box>
                 <CheckCircleIcon size={36} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
           <MetricCard>
-            <CardContent>
+            <StyledCardContent>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography variant="h3" fontWeight={700}>
@@ -456,7 +462,7 @@ const Analytics = () => {
                 </Box>
                 <AnalyticsIcon size={36} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </MetricCard>
         </Grid>
       </Grid>
@@ -465,28 +471,28 @@ const Analytics = () => {
         {/* Risk Distribution Chart */}
         <Grid item xs={12} md={6}>
           <StyledCard>
-            <CardContent sx={{ p: 3 }}>
+            <StyledCardContent sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight={600} gutterBottom>
                 Risk Distribution
               </Typography>
               <Box height={300}>
                 <Doughnut data={doughnutData} options={doughnutOptions} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
 
         {/* Analysis Types */}
         <Grid item xs={12} md={6}>
           <StyledCard>
-            <CardContent sx={{ p: 3 }}>
+            <StyledCardContent sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight={600} gutterBottom>
                 Analysis by Type
               </Typography>
               <Box height={300}>
                 <Bar data={barData} options={barOptions} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
       </Grid>
@@ -495,21 +501,21 @@ const Analytics = () => {
         {/* Activity Timeline */}
         <Grid item xs={12} md={8}>
           <StyledCard>
-            <CardContent sx={{ p: 3 }}>
+            <StyledCardContent sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight={600} gutterBottom>
                 Activity Timeline (Last 7 Days)
               </Typography>
               <Box height={300}>
                 <Line data={lineData} options={lineOptions} />
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
 
         {/* Security Insights */}
         <Grid item xs={12} md={4}>
           <StyledCard>
-            <CardContent sx={{ p: 3 }}>
+            <StyledCardContent sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight={600} gutterBottom>
                 Security Insights
               </Typography>
@@ -544,7 +550,7 @@ const Analytics = () => {
                   </Typography>
                 ))}
               </Box>
-            </CardContent>
+            </StyledCardContent>
           </StyledCard>
         </Grid>
       </Grid>
