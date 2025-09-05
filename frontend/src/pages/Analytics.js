@@ -47,55 +47,99 @@ ChartJS.register(
 );
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #1E293B 0%, #334155 50%, #1E293B 100%)',
-  border: '1px solid rgba(0, 255, 255, 0.3)',
-  boxShadow: '0 8px 32px rgba(0, 255, 255, 0.1)',
+  background: 'rgba(15, 23, 42, 0.1)',
+  border: '2px solid rgba(59, 130, 246, 0.6)',
+  boxShadow: '0 0 20px rgba(59, 130, 246, 0.3), 0 8px 32px rgba(0, 0, 0, 0.2)',
   borderRadius: '16px',
+  backdropFilter: 'blur(16px)',
   height: '100%',
   transition: 'all 0.3s ease',
   '&:hover': {
+    boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 12px 40px rgba(0, 0, 0, 0.3)',
+    border: '2px solid rgba(59, 130, 246, 0.9)',
     transform: 'translateY(-2px)',
   },
 }));
 
 const StyledCardContent = styled(CardContent)(({ theme }) => ({
   backgroundColor: 'transparent !important',
+  color: 'rgba(255, 255, 255, 0.95)',
   '&.MuiCardContent-root': {
     backgroundColor: 'transparent',
   },
 }));
 
 const MetricCard = styled(Card)(({ theme, riskLevel }) => {
-  const getGradient = () => {
+  const getColors = () => {
     switch (riskLevel) {
-      case 'high': return 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)';
-      case 'low': return 'linear-gradient(135deg, #feca57 0%, #ff9ff3 100%)';
-      case 'none': return 'linear-gradient(135deg, #48cab2 0%, #2dd4bf 100%)';
-      default: return 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+      case 'high': 
+        return {
+          bg: 'rgba(15, 23, 42, 0.1)',
+          border: 'rgba(239, 68, 68, 0.8)',
+          glow: 'rgba(239, 68, 68, 0.4)'
+        };
+      case 'low': 
+        return {
+          bg: 'rgba(15, 23, 42, 0.1)',
+          border: 'rgba(251, 191, 36, 0.8)',
+          glow: 'rgba(251, 191, 36, 0.4)'
+        };
+      case 'none': 
+        return {
+          bg: 'rgba(15, 23, 42, 0.1)',
+          border: 'rgba(34, 197, 94, 0.8)',
+          glow: 'rgba(34, 197, 94, 0.4)'
+        };
+      default: 
+        return {
+          bg: 'rgba(15, 23, 42, 0.1)',
+          border: 'rgba(59, 130, 246, 0.8)',
+          glow: 'rgba(59, 130, 246, 0.4)'
+        };
     }
   };
 
+  const colors = getColors();
+  
   return {
-    background: getGradient(),
-    color: 'white',
+    background: colors.bg,
+    border: `2px solid ${colors.border}`,
+    borderRadius: '16px',
+    color: 'rgba(255, 255, 255, 0.95)',
     height: '100%',
+    backdropFilter: 'blur(16px)',
+    boxShadow: `0 0 20px ${colors.glow}, 0 8px 32px rgba(0, 0, 0, 0.2)`,
     transition: 'all 0.3s ease',
     '&:hover': {
       transform: 'translateY(-2px)',
-      boxShadow: '0 8px 25px rgba(0,0,0,0.2)',
+      boxShadow: `0 0 30px ${colors.glow}, 0 12px 40px rgba(0, 0, 0, 0.3)`,
+      border: `2px solid ${colors.border.replace('0.8', '1')}`,
     },
   };
 });
 
 const RefreshButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  color: 'white',
+  background: 'rgba(15, 23, 42, 0.1)',
+  color: 'rgba(255, 255, 255, 0.9)',
+  padding: '12px 24px',
   borderRadius: '12px',
   textTransform: 'none',
   fontWeight: 600,
+  fontSize: '14px',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  transition: 'all 0.3s ease',
+  border: '2px solid rgba(59, 130, 246, 0.6)',
+  boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
-    transform: 'translateY(-1px)',
+    background: 'rgba(15, 23, 42, 0.2)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3)',
+    border: '2px solid rgba(59, 130, 246, 0.9)',
+  },
+  '&:disabled': {
+    background: 'rgba(71, 85, 105, 0.3)',
+    color: 'rgba(148, 163, 184, 0.7)',
+    border: '2px solid rgba(71, 85, 105, 0.5)',
   },
 }));
 
@@ -146,10 +190,24 @@ const Analytics = () => {
           parseFloat(analytics.low.percent),
           parseFloat(analytics.none.percent),
         ] : [0, 0, 0],
-        backgroundColor: ['#ff6b6b', '#feca57', '#48cab2'],
-        borderColor: ['#ff5252', '#ff9800', '#26a69a'],
-        borderWidth: 2,
-        hoverOffset: 4,
+        backgroundColor: [
+          'rgba(239, 68, 68, 0.8)',   // High Risk - Bright red with transparency
+          'rgba(251, 191, 36, 0.8)',  // Low Risk - Bright yellow/amber
+          'rgba(34, 197, 94, 0.8)',   // Safe - Bright green
+        ],
+        borderColor: [
+          'rgba(239, 68, 68, 1)',     // High Risk - Solid red border
+          'rgba(251, 191, 36, 1)',    // Low Risk - Solid yellow border
+          'rgba(34, 197, 94, 1)',     // Safe - Solid green border
+        ],
+        borderWidth: 3,
+        hoverOffset: 8,
+        hoverBorderWidth: 4,
+        hoverBackgroundColor: [
+          'rgba(239, 68, 68, 0.9)',
+          'rgba(251, 191, 36, 0.9)',
+          'rgba(34, 197, 94, 0.9)',
+        ],
       },
     ],
   };
@@ -163,13 +221,28 @@ const Analytics = () => {
         labels: {
           padding: 20,
           usePointStyle: true,
+          pointStyle: 'circle',
+          color: 'rgba(255, 255, 255, 0.9)',
           font: {
-            size: 12,
-            weight: '500',
+            size: 14,
+            weight: '600',
+            family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           },
         },
       },
       tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleColor: 'rgba(255, 255, 255, 0.95)',
+        bodyColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: 'rgba(59, 130, 246, 0.6)',
+        borderWidth: 2,
+        cornerRadius: 12,
+        bodyFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
+        titleFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
         callbacks: {
           label: function(context) {
             return `${context.label}: ${context.parsed}%`;
@@ -196,17 +269,29 @@ const Analytics = () => {
         label: 'Number of Scans',
         data: [typeData.text, typeData.url, typeData.file],
         backgroundColor: [
-          'rgba(102, 126, 234, 0.8)',
-          'rgba(118, 75, 162, 0.8)',
-          'rgba(72, 202, 178, 0.8)',
+          'rgba(99, 102, 241, 0.8)',   // Text - Indigo/Purple
+          'rgba(139, 92, 246, 0.8)',   // URL - Purple
+          'rgba(59, 130, 246, 0.8)',   // File - Blue
         ],
         borderColor: [
-          'rgba(102, 126, 234, 1)',
-          'rgba(118, 75, 162, 1)',
-          'rgba(72, 202, 178, 1)',
+          'rgba(99, 102, 241, 1)',
+          'rgba(139, 92, 246, 1)',
+          'rgba(59, 130, 246, 1)',
         ],
-        borderWidth: 1,
-        borderRadius: 8,
+        borderWidth: 2,
+        borderRadius: 12,
+        borderSkipped: false,
+        hoverBackgroundColor: [
+          'rgba(99, 102, 241, 0.9)',
+          'rgba(139, 92, 246, 0.9)',
+          'rgba(59, 130, 246, 0.9)',
+        ],
+        hoverBorderColor: [
+          'rgba(99, 102, 241, 1)',
+          'rgba(139, 92, 246, 1)',
+          'rgba(59, 130, 246, 1)',
+        ],
+        hoverBorderWidth: 3,
       },
     ],
   };
@@ -218,12 +303,48 @@ const Analytics = () => {
       legend: {
         display: false,
       },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleColor: 'rgba(255, 255, 255, 0.95)',
+        bodyColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: 'rgba(59, 130, 246, 0.6)',
+        borderWidth: 2,
+        cornerRadius: 12,
+        bodyFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
+        titleFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
+      }
     },
     scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            size: 12,
+            weight: '500',
+          },
+        },
+      },
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+          borderDash: [5, 5],
+        },
         ticks: {
           stepSize: 1,
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            size: 12,
+          },
         },
       },
     },
@@ -256,15 +377,23 @@ const Analytics = () => {
       {
         label: 'Daily Scans',
         data: timelineData.data,
-        borderColor: 'rgba(102, 126, 234, 1)',
-        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-        borderWidth: 3,
+        borderColor: 'rgba(59, 130, 246, 1)',
+        backgroundColor: 'linear-gradient(180deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.05) 100%)',
+        borderWidth: 4,
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
-        pointBorderColor: '#ffffff',
-        pointBorderWidth: 2,
-        pointRadius: 6,
+        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+        pointBorderColor: 'rgba(255, 255, 255, 1)',
+        pointBorderWidth: 3,
+        pointRadius: 8,
+        pointHoverRadius: 12,
+        pointHoverBackgroundColor: 'rgba(59, 130, 246, 1)',
+        pointHoverBorderColor: 'rgba(255, 255, 255, 1)',
+        pointHoverBorderWidth: 4,
+        shadowColor: 'rgba(59, 130, 246, 0.5)',
+        shadowBlur: 10,
+        shadowOffsetX: 0,
+        shadowOffsetY: 2,
       },
     ],
   };
@@ -272,16 +401,65 @@ const Analytics = () => {
   const lineOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    },
     plugins: {
       legend: {
         display: false,
       },
+      tooltip: {
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        titleColor: 'rgba(255, 255, 255, 0.95)',
+        bodyColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: 'rgba(59, 130, 246, 0.6)',
+        borderWidth: 2,
+        cornerRadius: 12,
+        bodyFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
+        titleFont: {
+          family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        },
+        displayColors: false,
+        callbacks: {
+          title: function(context) {
+            return `${context[0].label}`;
+          },
+          label: function(context) {
+            return `Scans: ${context.parsed.y}`;
+          }
+        }
+      }
     },
     scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            size: 12,
+            weight: '500',
+          },
+        },
+      },
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+          borderDash: [5, 5],
+        },
         ticks: {
           stepSize: 1,
+          color: 'rgba(255, 255, 255, 0.8)',
+          font: {
+            family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            size: 12,
+          },
         },
       },
     },
@@ -358,10 +536,24 @@ const Analytics = () => {
     <Box className="fade-in">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
-          <Typography variant="h4" gutterBottom fontWeight={700} color="primary.main">
+          <Typography 
+            variant="h4" 
+            gutterBottom 
+            sx={{
+              fontWeight: 700,
+              fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              color: 'rgba(255, 255, 255, 0.95)',
+            }}
+          >
             Security Analytics
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography 
+            variant="body1" 
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            }}
+          >
             Comprehensive analysis of security threats and patterns
           </Typography>
         </Box>
@@ -472,7 +664,15 @@ const Analytics = () => {
         <Grid item xs={12} md={6}>
           <StyledCard>
             <StyledCardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                gutterBottom
+                sx={{
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.95)',
+                }}
+              >
                 Risk Distribution
               </Typography>
               <Box height={300}>
@@ -486,7 +686,15 @@ const Analytics = () => {
         <Grid item xs={12} md={6}>
           <StyledCard>
             <StyledCardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                gutterBottom
+                sx={{
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.95)',
+                }}
+              >
                 Analysis by Type
               </Typography>
               <Box height={300}>
@@ -502,7 +710,15 @@ const Analytics = () => {
         <Grid item xs={12} md={8}>
           <StyledCard>
             <StyledCardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                gutterBottom
+                sx={{
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.95)',
+                }}
+              >
                 Activity Timeline (Last 7 Days)
               </Typography>
               <Box height={300}>
@@ -516,36 +732,79 @@ const Analytics = () => {
         <Grid item xs={12} md={4}>
           <StyledCard>
             <StyledCardContent sx={{ p: 3 }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom>
+              <Typography 
+                variant="h6" 
+                fontWeight={600} 
+                gutterBottom
+                sx={{
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.95)',
+                }}
+              >
                 Security Insights
               </Typography>
               
               <Box 
                 p={2} 
                 borderRadius="12px" 
-                bgcolor={
-                  riskInsights.level === 'high' ? '#fee2e2' :
-                  riskInsights.level === 'medium' ? '#fef3c7' :
-                  riskInsights.level === 'low' ? '#d1fae5' : '#e0e7ff'
-                }
-                mb={2}
+                sx={{
+                  background: riskInsights.level === 'high' ? 'rgba(239, 68, 68, 0.1)' :
+                             riskInsights.level === 'medium' ? 'rgba(251, 191, 36, 0.1)' :
+                             riskInsights.level === 'low' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+                  border: riskInsights.level === 'high' ? '1px solid rgba(239, 68, 68, 0.3)' :
+                         riskInsights.level === 'medium' ? '1px solid rgba(251, 191, 36, 0.3)' :
+                         riskInsights.level === 'low' ? '1px solid rgba(34, 197, 94, 0.3)' : '1px solid rgba(59, 130, 246, 0.3)',
+                  mb: 2
+                }}
               >
-                <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                <Typography 
+                  variant="subtitle1" 
+                  fontWeight={600} 
+                  gutterBottom
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.95)',
+                    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }}
+                >
                   {riskInsights.title}
                 </Typography>
-                <Typography variant="body2" paragraph>
+                <Typography 
+                  variant="body2" 
+                  paragraph
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }}
+                >
                   {riskInsights.message}
                 </Typography>
               </Box>
 
-              <Divider sx={{ my: 2 }} />
+              <Divider sx={{ my: 2, bgcolor: 'rgba(255, 255, 255, 0.1)' }} />
 
-              <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+              <Typography 
+                variant="subtitle2" 
+                fontWeight={600} 
+                gutterBottom
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                }}
+              >
                 Recommendations:
               </Typography>
               <Box component="ul" sx={{ pl: 2, m: 0 }}>
                 {riskInsights.recommendations.map((rec, index) => (
-                  <Typography key={index} component="li" variant="body2" sx={{ mb: 0.5 }}>
+                  <Typography 
+                    key={index} 
+                    component="li" 
+                    variant="body2" 
+                    sx={{ 
+                      mb: 0.5,
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    }}
+                  >
                     {rec}
                   </Typography>
                 ))}

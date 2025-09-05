@@ -131,24 +131,75 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
 }));
 
 const ActionButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  color: 'white',
-  borderRadius: '8px',
+  background: 'rgba(15, 23, 42, 0.1)',
+  color: 'rgba(255, 255, 255, 0.9)',
+  padding: '8px 20px',
+  borderRadius: '12px',
   textTransform: 'none',
   fontWeight: 600,
+  fontSize: '14px',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  transition: 'all 0.3s ease',
+  border: '2px solid rgba(59, 130, 246, 0.6)',
+  boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)',
+  backdropFilter: 'blur(16px)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%)',
+    background: 'rgba(15, 23, 42, 0.2)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 0 30px rgba(59, 130, 246, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3)',
+    border: '2px solid rgba(59, 130, 246, 0.9)',
+  },
+  '&:disabled': {
+    background: 'rgba(71, 85, 105, 0.3)',
+    color: 'rgba(148, 163, 184, 0.7)',
+    border: '2px solid rgba(71, 85, 105, 0.5)',
   },
 }));
 
 const ClearButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
-  color: 'white',
-  borderRadius: '8px',
+  background: 'rgba(15, 23, 42, 0.1)',
+  color: 'rgba(255, 255, 255, 0.9)',
+  padding: '8px 20px',
+  borderRadius: '12px',
   textTransform: 'none',
   fontWeight: 600,
+  fontSize: '14px',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  transition: 'all 0.3s ease',
+  border: '2px solid rgba(239, 68, 68, 0.6)',
+  boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)',
+  backdropFilter: 'blur(16px)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #ff5252 0%, #e53e3e 100%)',
+    background: 'rgba(15, 23, 42, 0.2)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 0 30px rgba(239, 68, 68, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3)',
+    border: '2px solid rgba(239, 68, 68, 0.9)',
+  },
+  '&:disabled': {
+    background: 'rgba(71, 85, 105, 0.3)',
+    color: 'rgba(148, 163, 184, 0.7)',
+    border: '2px solid rgba(71, 85, 105, 0.5)',
+  },
+}));
+
+const DialogButton = styled(Button)(({ theme }) => ({
+  background: 'rgba(15, 23, 42, 0.1)',
+  color: 'rgba(255, 255, 255, 0.9)',
+  padding: '8px 20px',
+  borderRadius: '12px',
+  textTransform: 'none',
+  fontWeight: 600,
+  fontSize: '14px',
+  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  transition: 'all 0.3s ease',
+  border: '2px solid rgba(71, 85, 105, 0.6)',
+  boxShadow: '0 0 20px rgba(71, 85, 105, 0.3)',
+  backdropFilter: 'blur(16px)',
+  '&:hover': {
+    background: 'rgba(15, 23, 42, 0.2)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 0 30px rgba(71, 85, 105, 0.5), 0 8px 25px rgba(0, 0, 0, 0.3)',
+    border: '2px solid rgba(71, 85, 105, 0.9)',
   },
 }));
 
@@ -377,43 +428,107 @@ const History = () => {
       <StyledCard>
         <StyledCardContent sx={{ p: 3 }}>
           {/* Filters */}
-          <Box display="flex" gap={2} mb={3} flexWrap="wrap">
-            <StyledTextField
-              select
-              label="Filter by Type"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              size="small"
-              sx={{ minWidth: 150 }}
-            >
-              <MenuItem value="all">All Types</MenuItem>
-              <MenuItem value="text">📝 Text</MenuItem>
-              <MenuItem value="url">🔗 URL</MenuItem>
-              <MenuItem value="file">📄 File</MenuItem>
-            </StyledTextField>
+          <Typography 
+            variant="h6" 
+            gutterBottom 
+            sx={{
+              fontWeight: 600,
+              fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              color: 'rgba(255, 255, 255, 0.95)',
+              mb: 2
+            }}
+          >
+            Filter Results
+          </Typography>
+          
+          <Box display="flex" gap={3} mb={3} flexWrap="wrap" alignItems="flex-end">
+            <Box>
+              <Typography 
+                variant="body2" 
+                sx={{
+                  fontWeight: 500,
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  mb: 1
+                }}
+              >
+                Filter by Type
+              </Typography>
+              <StyledTextField
+                select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                size="small"
+                sx={{ minWidth: 150 }}
+                InputProps={{
+                  style: {
+                    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }
+                }}
+              >
+                <MenuItem value="all">All Types</MenuItem>
+                <MenuItem value="text">📝 Text</MenuItem>
+                <MenuItem value="url">🔗 URL</MenuItem>
+                <MenuItem value="file">📄 File</MenuItem>
+              </StyledTextField>
+            </Box>
 
-            <StyledTextField
-              select
-              label="Filter by Risk"
-              value={filterRisk}
-              onChange={(e) => setFilterRisk(e.target.value)}
-              size="small"
-              sx={{ minWidth: 150 }}
-            >
-              <MenuItem value="all">All Risk Levels</MenuItem>
-              <MenuItem value="high">🔴 High Risk</MenuItem>
-              <MenuItem value="low">🟡 Low Risk</MenuItem>
-              <MenuItem value="none">🟢 Safe</MenuItem>
-            </StyledTextField>
+            <Box>
+              <Typography 
+                variant="body2" 
+                sx={{
+                  fontWeight: 500,
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  mb: 1
+                }}
+              >
+                Filter by Risk
+              </Typography>
+              <StyledTextField
+                select
+                value={filterRisk}
+                onChange={(e) => setFilterRisk(e.target.value)}
+                size="small"
+                sx={{ minWidth: 150 }}
+                InputProps={{
+                  style: {
+                    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }
+                }}
+              >
+                <MenuItem value="all">All Risk Levels</MenuItem>
+                <MenuItem value="high">🔴 High Risk</MenuItem>
+                <MenuItem value="low">🟡 Low Risk</MenuItem>
+                <MenuItem value="none">🟢 Safe</MenuItem>
+              </StyledTextField>
+            </Box>
 
-            <StyledTextField
-              label="Search content"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              size="small"
-              placeholder="Search in analyzed content..."
-              sx={{ minWidth: 200, flexGrow: 1 }}
-            />
+            <Box sx={{ flexGrow: 1, minWidth: 200 }}>
+              <Typography 
+                variant="body2" 
+                sx={{
+                  fontWeight: 500,
+                  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  mb: 1
+                }}
+              >
+                Search Content
+              </Typography>
+              <StyledTextField
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                size="small"
+                placeholder="Search in analyzed content..."
+                sx={{ width: '100%' }}
+                InputProps={{
+                  style: {
+                    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  }
+                }}
+              />
+            </Box>
           </Box>
 
           {/* History Table */}
@@ -632,9 +747,9 @@ const History = () => {
             </DialogContent>
             
             <DialogActions>
-              <Button onClick={handleCloseDetails} variant="outlined">
+              <DialogButton onClick={handleCloseDetails}>
                 Close
-              </Button>
+              </DialogButton>
             </DialogActions>
           </>
         )}
@@ -649,9 +764,9 @@ const History = () => {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setClearDialogOpen(false)} variant="outlined">
+          <DialogButton onClick={() => setClearDialogOpen(false)}>
             Cancel
-          </Button>
+          </DialogButton>
           <ClearButton
             onClick={handleClearHistory}
             disabled={clearing}
