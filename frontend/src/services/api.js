@@ -1,10 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000';
+// Environment-aware API base URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+console.log('API Base URL:', API_BASE_URL); // For debugging in production
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 export const apiService = {

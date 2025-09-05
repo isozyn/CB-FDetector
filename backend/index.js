@@ -4,9 +4,34 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Production-ready CORS configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [
+        'https://your-netlify-site.netlify.app',
+        'https://your-custom-domain.com'
+      ] 
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001'
+      ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' })); // Increased limit for larger texts
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -255,7 +280,7 @@ ${fileContent.substring(0, 30000)}` // Limit to 30K chars for efficiency
   }
 });
 
-// --- Text Analysis (Hugging Face) ---
+// --- Text Analysis (Tencent Hunyuan A13B) ---
 app.post('/analyze/text', async (req, res) => {
   console.log('=== TEXT ANALYSIS REQUEST ===');
   console.log('Request headers:', req.headers);
@@ -289,33 +314,91 @@ app.post('/analyze/text', async (req, res) => {
     let risk = 'none', confidence = 0.99, result = { safe: true };
     
     try {
-      const hfToken = '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';
-      const hfUrl = 'https://api-inference.huggingface.co/models/mrm8488/bert-tiny-finetuned-sms-spam-detection';
+      // Primary: OpenRouter DeepSeek API
+      console.log('Calling OpenRouter DeepSeek API...');
+      const openrouterApiKey = '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';
+      const openrouterUrl = 'https://openrouter.ai/api/v1/chat/completions';
       
-      console.log('Calling Hugging Face API...');
-      const response = await axios.post(hfUrl, { inputs: text }, {
-        headers: { Authorization: `Bearer ${hfToken}` },
-        timeout: 10000 // 10 second timeout
+      const response = await axios.post(openrouterUrl, {
+        model: 'deepseek/deepseek-chat', // Using DeepSeek model
+        messages: [{
+          role: 'user',
+          content: `Classify this text as Spam, Scam, or Safe. Return a likelihood score from 0-100.
+
+Text to analyze: "${text}"
+
+Please provide your response in this exact format:
+Classification: [Spam/Scam/Safe]
+Score: [0-100]
+Reasoning: [Brief explanation]`
+        }],
+        max_tokens: 300,
+        temperature: 0.1
+      }, {
+        headers: {
+          'Authorization': `Bearer ${openrouterApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 15000 // 15 second timeout
       });
       
-      console.log('Hugging Face API response:', response.data);
-      result = response.data;
+      console.log('OpenRouter DeepSeek API response:', response.data);
+      const analysis = response.data.choices[0].message.content;
+      console.log('AI Analysis text:', analysis);
       
-      // Parse result for spam/fraud
-      if (Array.isArray(result) && result[0] && result[0].label && typeof result[0].score === 'number') {
-        const label = result[0].label.toLowerCase();
-        confidence = result[0].score;
-        console.log(`HF Analysis: label="${label}", score=${confidence}`);
-        
-        if (label.includes('spam') || label.includes('fraud')) {
-          risk = confidence > 0.8 ? 'high' : 'low';
-        }
-      } else {
-        console.log('Unexpected HF response format, using fallback');
-        throw new Error('Unexpected API response format');
+      // Parse the AI response to extract classification and score
+      let detectedRisk = 'none';
+      let detectedConfidence = 0.90;
+      let classification = 'Safe';
+      let score = 0;
+      
+      // Enhanced parsing for structured response
+      const classificationMatch = analysis.match(/classification:\s*(spam|scam|safe)/i);
+      const scoreMatch = analysis.match(/score:\s*(\d+)/i) || analysis.match(/(\d+)(?:\s*\/\s*100|\s*%)/i);
+      
+      if (scoreMatch) {
+        score = parseInt(scoreMatch[1]);
+        console.log('Extracted score:', score);
       }
+      
+      if (classificationMatch) {
+        classification = classificationMatch[1];
+        console.log('Extracted classification:', classification);
+      }
+      
+      // Determine risk level based on classification and score
+      const lowerClassification = classification.toLowerCase();
+      const lowerAnalysis = analysis.toLowerCase();
+      
+      if (lowerClassification === 'scam' || lowerAnalysis.includes('scam') || lowerAnalysis.includes('fraud') || score >= 71) {
+        detectedRisk = 'high';
+        classification = 'Scam';
+        detectedConfidence = Math.max(0.85, Math.min(0.99, score / 100));
+      } else if (lowerClassification === 'spam' || lowerAnalysis.includes('spam') || (score >= 31 && score <= 70)) {
+        detectedRisk = 'low';
+        classification = 'Spam';
+        detectedConfidence = Math.max(0.70, Math.min(0.95, score / 100));
+      } else if (lowerClassification === 'safe' || lowerAnalysis.includes('safe') || score <= 30) {
+        detectedRisk = 'none';
+        classification = 'Safe';
+        detectedConfidence = Math.max(0.85, Math.min(0.99, 1 - (score / 100)));
+      }
+      
+      risk = detectedRisk;
+      confidence = detectedConfidence;
+      result = {
+        analysis: 'tencent-hunyuan-a13b',
+        classification: classification,
+        score: score,
+        ai_analysis: analysis,
+        reason: `AI-powered analysis using Tencent Hunyuan A13B`,
+        likelihood_percentage: score
+      };
+      
+      console.log('Tencent analysis result:', { risk, confidence, classification, score });
+      
     } catch (apiErr) {
-      console.log('Hugging Face API error, using fallback analysis:');
+      console.error('Tencent Hunyuan API error:', apiErr.message);
       console.error('API Error details:', {
         message: apiErr.message,
         status: apiErr.response?.status,
@@ -323,65 +406,13 @@ app.post('/analyze/text', async (req, res) => {
         data: apiErr.response?.data
       });
       
-      // Fallback: simple pattern-based fraud/spam detection
-      const spamPatterns = [
-        'free money', 'click here', 'congratulations', 'you have won', 'claim now',
-        'urgent', 'limited time', 'act now', 'call immediately', 'guaranteed',
-        'make money fast', 'no risk', '100% free', 'credit card', 'social security',
-        'winner', 'prize', 'lottery', 'inheritance', 'verify account', 'suspended',
-        'bank account', 'wire transfer', 'bitcoin', 'cryptocurrency', 'investment opportunity',
-        'get rich quick', 'work from home', 'earn money online', 'cash prize',
-        'tax refund', 'irs', 'government grant', 'loan approved', 'debt consolidation'
-      ];
-      
-      const urgencyWords = ['urgent', 'immediate', 'expires', 'limited time', 'hurry', 'act now'];
-      const moneyWords = ['money', 'cash', 'prize', 'reward', 'payment', 'refund', 'loan'];
-      const actionWords = ['click', 'call', 'verify', 'confirm', 'update', 'download'];
-      
-      const textLower = text.toLowerCase();
-      const matchedPatterns = spamPatterns.filter(pattern => textLower.includes(pattern));
-      const urgencyMatches = urgencyWords.filter(word => textLower.includes(word));
-      const moneyMatches = moneyWords.filter(word => textLower.includes(word));
-      const actionMatches = actionWords.filter(word => textLower.includes(word));
-      
-      const spamScore = matchedPatterns.length;
-      const compositeScore = spamScore + (urgencyMatches.length * 0.5) + (moneyMatches.length * 0.3) + (actionMatches.length * 0.2);
-      
-      console.log(`Fallback analysis: found ${spamScore} spam patterns, composite score: ${compositeScore}:`, matchedPatterns);
-      
-      if (compositeScore >= 3) {
-        risk = 'high';
-        confidence = Math.min(0.95, 0.80 + (compositeScore * 0.05));
-        result = { 
-          fallback: true, 
-          reason: `High spam indicators detected`,
-          patterns: matchedPatterns,
-          urgencyWords: urgencyMatches,
-          moneyWords: moneyMatches,
-          actionWords: actionMatches,
-          compositeScore: compositeScore.toFixed(2)
-        };
-      } else if (compositeScore >= 1.5) {
-        risk = 'low';
-        confidence = Math.min(0.85, 0.60 + (compositeScore * 0.1));
-        result = { 
-          fallback: true, 
-          reason: `Some spam indicators detected`,
-          patterns: matchedPatterns,
-          urgencyWords: urgencyMatches,
-          moneyWords: moneyMatches,
-          actionWords: actionMatches,
-          compositeScore: compositeScore.toFixed(2)
-        };
-      } else {
-        confidence = Math.max(0.90, 0.95 - (compositeScore * 0.1));
-        result = { 
-          fallback: true, 
-          reason: 'minimal spam indicators detected',
-          patterns: [],
-          compositeScore: compositeScore.toFixed(2)
-        };
-      }
+      // Return error instead of fallback
+      return res.status(503).json({
+        error: 'Text analysis API unavailable',
+        details: 'Tencent Hunyuan A13B API is currently unavailable. Please try again later.',
+        apiError: apiErr.message,
+        timestamp: new Date().toISOString()
+      });
     }
     
     const entry = { type: 'text', input: text, risk, confidence, result, date: new Date() };

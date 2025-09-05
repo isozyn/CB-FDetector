@@ -20,6 +20,13 @@ backend/dist/
 .env.development.local
 .env.test.local
 .env.production.local
+backend/.env*
+frontend/.env*
+
+# Netlify
+.netlify/
+.env.test.local
+.env.production.local
 .env.development
 .env.production
 .env.test
