@@ -28,29 +28,65 @@ import {
 import { apiService } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-  border: '1px solid rgba(0,0,0,0.05)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  background: 'linear-gradient(135deg, rgba(26,31,58,0.9) 0%, rgba(42,47,90,0.9) 100%)',
+  border: '1px solid rgba(0,255,255,0.3)',
+  boxShadow: '0 8px 32px rgba(0,255,255,0.1)',
   borderRadius: '16px',
+  backdropFilter: 'blur(10px)',
 }));
 
 const AnalyzeButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-  color: 'white',
+  background: 'linear-gradient(135deg, #00ffff 0%, #00cc99 100%)',
+  color: '#0a0e27',
   padding: '12px 32px',
   borderRadius: '12px',
-  textTransform: 'none',
-  fontWeight: 600,
+  textTransform: 'uppercase',
+  fontWeight: 700,
   fontSize: '16px',
+  letterSpacing: '0.02em',
   transition: 'all 0.3s ease',
+  border: '1px solid rgba(0,255,255,0.3)',
+  boxShadow: '0 0 20px rgba(0,255,255,0.3)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #6a4190 0%, #5a6fd8 100%)',
+    background: 'linear-gradient(135deg, #00ff41 0%, #00cc33 100%)',
     transform: 'translateY(-2px)',
-    boxShadow: '0 8px 25px rgba(118, 75, 162, 0.3)',
+    boxShadow: '0 8px 25px rgba(0,255,255, 0.4), 0 0 30px rgba(0,255,255,0.5)',
+    border: '1px solid rgba(0,255,255,0.6)',
   },
   '&:disabled': {
-    background: '#e2e8f0',
-    color: '#94a3b8',
+    background: '#4a5568',
+    color: '#a0aec0',
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '12px',
+    backgroundColor: 'rgba(26,31,58,0.8)',
+    color: '#ffffff',
+    border: '1px solid rgba(0,255,255,0.3)',
+    '& fieldset': {
+      borderColor: 'rgba(0,255,255,0.3)',
+    },
+    '&:hover fieldset': {
+      borderColor: 'rgba(0,255,255,0.5)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#00ffff',
+      boxShadow: '0 0 20px rgba(0,255,255,0.3)',
+    },
+    '& .MuiInputBase-input': {
+      color: '#ffffff',
+      '&::placeholder': {
+        color: 'rgba(255,255,255,0.6)',
+      },
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: 'rgba(255,255,255,0.7)',
+    '&.Mui-focused': {
+      color: '#00ffff',
+    },
   },
 }));
 
@@ -59,27 +95,38 @@ const ResultCard = styled(Paper)(({ theme, riskLevel }) => {
     switch (riskLevel) {
       case 'high': 
         return {
-          bg: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
-          border: '#fca5a5',
-          text: '#dc2626'
+          bg: 'linear-gradient(135deg, rgba(255,0,64,0.1) 0%, rgba(204,0,51,0.1) 100%)',
+          border: 'rgba(255,0,64,0.5)',
+          text: '#ff0040',
+          glow: '0 0 20px rgba(255,0,64,0.3)'
+        };
+      case 'medium': 
+        return {
+          bg: 'linear-gradient(135deg, rgba(255,149,0,0.1) 0%, rgba(204,119,0,0.1) 100%)',
+          border: 'rgba(255,149,0,0.5)',
+          text: '#ff9500',
+          glow: '0 0 20px rgba(255,149,0,0.3)'
         };
       case 'low': 
         return {
-          bg: 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%)',
-          border: '#fbbf24',
-          text: '#d97706'
+          bg: 'linear-gradient(135deg, rgba(0,255,65,0.1) 0%, rgba(0,204,51,0.1) 100%)',
+          border: 'rgba(0,255,65,0.5)',
+          text: '#00ff41',
+          glow: '0 0 20px rgba(0,255,65,0.3)'
         };
       case 'none': 
         return {
-          bg: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-          border: '#34d399',
-          text: '#059669'
+          bg: 'linear-gradient(135deg, rgba(0,255,255,0.1) 0%, rgba(0,204,204,0.1) 100%)',
+          border: 'rgba(0,255,255,0.5)',
+          text: '#00ffff',
+          glow: '0 0 20px rgba(0,255,255,0.3)'
         };
       default: 
         return {
-          bg: 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)',
-          border: '#818cf8',
-          text: '#4338ca'
+          bg: 'linear-gradient(135deg, rgba(26,31,58,0.8) 0%, rgba(42,47,90,0.8) 100%)',
+          border: 'rgba(0,255,255,0.3)',
+          text: '#00ffff',
+          glow: '0 0 20px rgba(0,255,255,0.3)'
         };
     }
   };
@@ -93,7 +140,17 @@ const ResultCard = styled(Paper)(({ theme, riskLevel }) => {
     padding: '24px',
     color: colors.text,
     marginTop: '24px',
+    boxShadow: colors.glow,
+    backdropFilter: 'blur(10px)',
     animation: 'scaleIn 0.4s ease-out',
+    '& .MuiTypography-root': {
+      color: '#ffffff',
+    },
+    '& .MuiChip-root': {
+      backgroundColor: colors.border,
+      color: colors.text,
+      fontWeight: 600,
+    },
   };
 });
 
@@ -236,26 +293,14 @@ const UrlAnalysis = () => {
             </Box>
           </Box>
 
-          <TextField
+          <StyledTextField
             fullWidth
             variant="outlined"
             placeholder="https://example.com or example.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{
-              mb: 3,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '12px',
-                backgroundColor: '#f8fafc',
-                '&:hover fieldset': {
-                  borderColor: '#764ba2',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#764ba2',
-                },
-              },
-            }}
+            sx={{ mb: 3 }}
             helperText="Enter any website URL. Protocol (https://) will be added automatically if missing."
           />
 

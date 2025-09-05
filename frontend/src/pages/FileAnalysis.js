@@ -28,45 +28,52 @@ import {
 import { apiService } from '../services/api';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-  border: '1px solid rgba(0,0,0,0.05)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+  background: 'linear-gradient(135deg, rgba(26,31,58,0.9) 0%, rgba(42,47,90,0.9) 100%)',
+  border: '1px solid rgba(0,255,255,0.3)',
+  boxShadow: '0 8px 32px rgba(0,255,255,0.1)',
   borderRadius: '16px',
+  backdropFilter: 'blur(10px)',
 }));
 
 const UploadArea = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'isDragOver',
 })(({ theme, isDragOver }) => ({
-  border: `2px dashed ${isDragOver ? '#48cab2' : '#e2e8f0'}`,
+  border: `2px dashed ${isDragOver ? '#00ffff' : 'rgba(0,255,255,0.3)'}`,
   borderRadius: '16px',
   padding: '48px 24px',
   textAlign: 'center',
-  backgroundColor: isDragOver ? '#f0fdfa' : '#f8fafc',
+  backgroundColor: isDragOver ? 'rgba(0,255,255,0.1)' : 'rgba(26,31,58,0.5)',
   cursor: 'pointer',
   transition: 'all 0.3s ease',
+  boxShadow: isDragOver ? '0 0 30px rgba(0,255,255,0.3)' : '0 0 10px rgba(0,255,255,0.1)',
   '&:hover': {
-    borderColor: '#48cab2',
-    backgroundColor: '#f0fdfa',
+    borderColor: '#00ffff',
+    backgroundColor: 'rgba(0,255,255,0.1)',
+    boxShadow: '0 0 20px rgba(0,255,255,0.2)',
   },
 }));
 
 const UploadButton = styled(Button)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #48cab2 0%, #2dd4bf 100%)',
-  color: 'white',
+  background: 'linear-gradient(135deg, #00ffff 0%, #00cc99 100%)',
+  color: '#0a0e27',
   padding: '12px 32px',
   borderRadius: '12px',
-  textTransform: 'none',
-  fontWeight: 600,
+  textTransform: 'uppercase',
+  fontWeight: 700,
   fontSize: '16px',
+  letterSpacing: '0.02em',
   transition: 'all 0.3s ease',
+  border: '1px solid rgba(0,255,255,0.3)',
+  boxShadow: '0 0 20px rgba(0,255,255,0.3)',
   '&:hover': {
-    background: 'linear-gradient(135deg, #3ba29c 0%, #26c2a8 100%)',
+    background: 'linear-gradient(135deg, #00ff41 0%, #00cc33 100%)',
     transform: 'translateY(-2px)',
-    boxShadow: '0 8px 25px rgba(72, 202, 178, 0.3)',
+    boxShadow: '0 8px 25px rgba(0,255,255, 0.4), 0 0 30px rgba(0,255,255,0.5)',
+    border: '1px solid rgba(0,255,255,0.6)',
   },
   '&:disabled': {
-    background: '#e2e8f0',
-    color: '#94a3b8',
+    background: '#4a5568',
+    color: '#a0aec0',
   },
 }));
 
